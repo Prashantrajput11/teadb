@@ -6,7 +6,28 @@ import connectDB from "./db/index.js";
 
 dotenv.config({ path: "./env" });
 
-connectDB();
+connectDB()
+  .then(() => {
+    const PORT = process.env.PORT || 8000;
+
+    const server = app.listen(PORT, () => {
+      console.log(`✅ Server is running at port ${PORT}`);
+    });
+
+    // Attach event listeners to the server instance, not the app
+    server.on("error", (error) => {
+      console.error("❌ Server Error:", error);
+      throw error;
+    });
+
+    server.on("listening", () => {
+      console.log("📡 Server is ready to accept connections");
+    });
+  })
+  .catch((err) => {
+    console.log("❌ MongoDB connection failed!!!!", err);
+  });
+
 // const app = express();
 
 // (async () => {
